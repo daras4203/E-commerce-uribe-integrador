@@ -1,48 +1,19 @@
-package com.example.EcomerceUribe.modelos;
+package com.example.EcomerceUribe.modelos.DTOS;
 
-import com.example.EcomerceUribe.ayudas.Categoria;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.*;
-
-@Entity
-@Table(name="productos")
-public class Producto {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class ProductoDTO {
     private Integer id;
-
-    @Column(name="name", nullable = false, length = 50)
     private String nombre;
-
-    @Column(name="photo", nullable = true, length = 255)
     private String fotografia;
-
-    @Column(name="description", nullable = true, length = 500)
     private String descripcion;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name="category", nullable = false, length = 20)
-    private Categoria categoria;
-
-    @Column(name="price_uni", nullable = false)
+    private String categoria; // Enum como texto
     private Integer precioUnitario;
-
-    @Column(name="brand", nullable = false, length = 50)
     private String marca;
-
-    @Column(name="discount_applicable", nullable = false)
     private boolean aplicaDescuento;
 
-    @ManyToOne
-    @JoinColumn(name = "fk_pedido", referencedColumnName = "id")
-    @JsonBackReference(value = "relacionpedidoproducto")
-    private Pedido pedido;
-
-    public Producto() {
+    public ProductoDTO() {
     }
 
-    public Producto(Integer id, String nombre, String fotografia, String descripcion, Categoria categoria, Integer precioUnitario, String marca, boolean aplicaDescuento, Pedido pedido) {
+    public ProductoDTO(Integer id, String nombre, String fotografia, String descripcion, String categoria, Integer precioUnitario, String marca, boolean aplicaDescuento) {
         this.id = id;
         this.nombre = nombre;
         this.fotografia = fotografia;
@@ -51,7 +22,6 @@ public class Producto {
         this.precioUnitario = precioUnitario;
         this.marca = marca;
         this.aplicaDescuento = aplicaDescuento;
-        this.pedido = pedido;
     }
 
     public Integer getId() {
@@ -86,11 +56,11 @@ public class Producto {
         this.descripcion = descripcion;
     }
 
-    public Categoria getCategoria() {
+    public String getCategoria() {
         return categoria;
     }
 
-    public void setCategoria(Categoria categoria) {
+    public void setCategoria(String categoria) {
         this.categoria = categoria;
     }
 
@@ -116,13 +86,5 @@ public class Producto {
 
     public void setAplicaDescuento(boolean aplicaDescuento) {
         this.aplicaDescuento = aplicaDescuento;
-    }
-
-    public Pedido getPedido() {
-        return pedido;
-    }
-
-    public void setPedido(Pedido pedido) {
-        this.pedido = pedido;
     }
 }

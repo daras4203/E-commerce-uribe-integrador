@@ -17,7 +17,7 @@ public class Empleado {
     @Column(name="rol",nullable = false, unique = false)
     private Cargos cargo;
     @Column(name="salary",nullable = false, unique = false)
-    private Integer salario;
+    private Integer  salario;
     @Enumerated(EnumType.STRING)
     @Column(name="site",nullable = false, unique = false)
     private Sedes sede;
