@@ -22,6 +22,6 @@ public interface IClienteMapa {
     @Mapping(source = "usuario.id", target = "usuarioId")
     public ClienteDTO convertir_cliente_a_clientedto(Cliente cliente);
 
-    // 2. Que transforme una List<modelo> en una List<DTO>
-    List<ClienteDTO> convertir_lista_a_listadto(List<Cliente> lista);
+    // 2. Que transforme una List<modelo> en una List<DTO
+    List<ClienteDTO> convertir_lista_a_listadtocliente(List<Cliente> listaClientes);
 }

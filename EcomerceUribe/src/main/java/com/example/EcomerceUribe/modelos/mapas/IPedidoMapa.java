@@ -23,4 +23,6 @@ public interface IPedidoMapa {
 
     // 2. Que transforme una List<modelo> en una List<DTO>
     List<PedidoDTO> convertir_lista_a_listadto(List<Pedido> lista);
+
+    List<PedidoDTO> convertir_lista_a_listadtos(List<Pedido> listaPedidos);
 }

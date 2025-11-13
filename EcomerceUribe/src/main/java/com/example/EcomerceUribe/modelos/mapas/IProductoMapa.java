@@ -24,5 +24,5 @@ public interface IProductoMapa {
     public ProductoDTO convertir_producto_a_productodto(Producto producto);
 
     // 2. Que transforme una List<modelo> en una List<DTO>
-    List<ProductoDTO> convertir_lista_a_listadto(List<Producto> lista);
+    List<ProductoDTO> convertir_lista_a_listadtos(List<Producto> productosPorPrecio);
 }

@@ -17,6 +17,6 @@ public interface IClienteRepositorio extends JpaRepository<Cliente, Integer> {
 
     // SECCIÓN DE CONSULTAS PERSONALIZADAS
     List<Cliente> findByNombre(String nombre);
-    Optional<Cliente> findByCorreo(String correo);
+    Optional<Cliente> findByDireccion(String direccion);
     List<Cliente> findByDepartamento(String departamento);
 }

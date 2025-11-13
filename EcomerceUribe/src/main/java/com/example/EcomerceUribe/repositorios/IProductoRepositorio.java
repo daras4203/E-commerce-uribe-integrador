@@ -14,8 +14,8 @@ public interface IProductoRepositorio extends JpaRepository<Producto, Integer> {
     // BUSCAR POR ID
     // BUSCAR TODOS LOS REGISTROS
 
-    // 🔍 CONSULTAS PERSONALIZADAS
-    List<Producto> findByCategoria(String categoria);               // Buscar productos por categoría
+    //  CONSULTAS PERSONALIZADAS
+    List<Producto> findByCategoria(String categoria);// Buscar productos por categoría
     List<Producto> findByPrecio(Double precio); // Buscar por precios
 
 }

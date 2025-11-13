@@ -22,5 +22,5 @@ public interface IEmpleadoMapa {
     public EmpleadoDTO convertir_empleado_a_empleadodto(Empleado empleado);
 
     // 2. Que transforme una List<modelo> en una List<DTO>
-    List<EmpleadoDTO> convertir_lista_a_listadto(List<Empleado> lista);
+    List<EmpleadoDTO> convertir_lista_a_listadtos(List<Empleado> listaEmpleados);
 }

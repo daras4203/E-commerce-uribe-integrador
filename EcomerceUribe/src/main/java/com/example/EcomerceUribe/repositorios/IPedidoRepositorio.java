@@ -16,7 +16,7 @@ public interface IPedidoRepositorio extends JpaRepository<Pedido, Integer> {
     // BUSCAR TODOS LOS REGISTROS
 
     // 🔍 CONSULTAS PERSONALIZADAS
-    List<Pedido> findByfechaCreacion(LocalDate fechaCreacion);
+    List<Pedido> findByFechaCreacion(LocalDate fechaCreacion);
     List<Pedido> findByMontoTotal(Integer montoTotal);
 }
 
