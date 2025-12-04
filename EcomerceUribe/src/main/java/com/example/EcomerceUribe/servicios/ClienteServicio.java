@@ -2,6 +2,7 @@ package com.example.EcomerceUribe.servicios;
 
 import com.example.EcomerceUribe.modelos.Cliente;
 import com.example.EcomerceUribe.modelos.DTOS.ClienteDTO;
+import com.example.EcomerceUribe.modelos.mapas.IClienteMapa;
 import com.example.EcomerceUribe.repositorios.IClienteRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

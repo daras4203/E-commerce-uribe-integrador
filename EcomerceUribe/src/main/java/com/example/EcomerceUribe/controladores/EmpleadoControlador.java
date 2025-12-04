@@ -2,11 +2,8 @@ package com.example.EcomerceUribe.controladores;
 
 
 import com.example.EcomerceUribe.modelos.DTOS.EmpleadoDTO;
-import com.example.EcomerceUribe.modelos.DTOS.ProductoDTO;
 import com.example.EcomerceUribe.modelos.Empleado;
-import com.example.EcomerceUribe.modelos.Producto;
 import com.example.EcomerceUribe.servicios.EmpleadoServicio;
-import com.example.EcomerceUribe.servicios.PedidoServicio;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -50,7 +46,7 @@ public class EmpleadoControlador {
     }
 
 
-    //eliminar empleado por sede
+    //eliminar por sede
     @Operation(summary="Eliminar empleados en la base de datos")
     @DeleteMapping(value = "/{sede}", produces = "application/json")
     public ResponseEntity<Void> eliminar(@PathVariable String sede){

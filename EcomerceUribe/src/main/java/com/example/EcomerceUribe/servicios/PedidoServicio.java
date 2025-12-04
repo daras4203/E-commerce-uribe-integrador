@@ -1,6 +1,5 @@
 package com.example.EcomerceUribe.servicios;
 
-
 import com.example.EcomerceUribe.modelos.DTOS.PedidoDTO;
 import com.example.EcomerceUribe.modelos.Pedido;
 import com.example.EcomerceUribe.modelos.mapas.IPedidoMapa;
@@ -15,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class PedidoServicio<PedidoDTO> {
+public class PedidoServicio {
 
     @Autowired
     private IPedidoRepositorio repositorio;
@@ -23,102 +22,99 @@ public class PedidoServicio<PedidoDTO> {
     @Autowired
     private IPedidoMapa mapa;
 
-    public PedidoDTO guardarPedido(Pedido datosPedido){
+    // Guardar pedido
+    public PedidoDTO guardarPedido(Pedido datosPedido) {
 
-        if(datosPedido.getMontoTotal()==null || datosPedido.getMontoTotal() <= 0) {
+        if (datosPedido.getMontoTotal() == null || datosPedido.getMontoTotal() <= 0) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-
                     "El monto total del pedido es obligatorio"
             );
         }
-        Pedido pedidoQueGuardoElRepo=this.repositorio.save(datosPedido);
-        if(pedidoQueGuardoElRepo==null){
+
+        Pedido pedidoGuardado = this.repositorio.save(datosPedido);
+
+        if (pedidoGuardado == null) {
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error al guardar el pedido en la base de datos"
             );
-
         }
 
-        return this.mapa.convertir_pedido_a_pedidodto(pedidoQueGuardoElRepo);
-
-    }
-    //Buscar todos los pedidos
-    public List<PedidoDTO> buscarTodosLosPedidos(){
-        List<Pedido> listaDePedidosConsultados=this.repositorio.findAll();
-        return this.mapa.convetir_lista_a_listapedidodto(listaDePedidosConsultados);
+        return (PedidoDTO) this.mapa.convertir_pedido_a_pedidodto(pedidoGuardado);
     }
 
-    //Buscar por Id
-    public  PedidoDTO buscarPedidoPorId (Integer id){
-        Optional<Pedido> pedidoQueEstoyBuscando=this.repositorio.findById(id);
-        if(!pedidoQueEstoyBuscando.isPresent()){
+    // Buscar todos los pedidos
+    public List<PedidoDTO> buscarTodosLosPedidos() {
+        List<Pedido> lista = this.repositorio.findAll();
+        return this.mapa.convetir_lista_a_listapedidodto(lista);
+    }
+
+    // Buscar por ID
+    public PedidoDTO buscarPedidoPorId(Integer id) {
+        Optional<Pedido> pedidoBuscado = this.repositorio.findById(id);
+
+        if (!pedidoBuscado.isPresent()) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
-                    "No se encontro ningun pedido con el id "+id+" suministrado"
+                    "No se encontró ningún pedido con el id " + id
             );
         }
-        Pedido pedidoEncontrado = pedidoQueEstoyBuscando.get();
-        return this.mapa.convertir_pedido_a_pedidodto(pedidoEncontrado);
+
+        return (PedidoDTO) this.mapa.convertir_pedido_a_pedidodto(pedidoBuscado.get());
     }
 
+    // Eliminar un pedido por fecha de creación
+    public void eliminarPedido(LocalDate fechaCreacion) {
+        List<Pedido> pedidos = this.repositorio.findByFechaCreacion(fechaCreacion);
 
-    //Eliminar un pedido por fecha de creación
-    public void eliminarPedido(LocalDate fechaCreacion){
-        List<Pedido> pedidoQueEstoyBuscando=this.repositorio.findByFechaCreacion(fechaCreacion);
-        if(!pedidoQueEstoyBuscando.isEmpty()) {
+        // CORREGIDO (la condición estaba al revés)
+        if (pedidos.isEmpty()) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
-                    "No se encontro ningun pedido con la fecha " + fechaCreacion + " suministrado"
+                    "No se encontró ningún pedido con la fecha " + fechaCreacion
             );
         }
-        Pedido pedidoEncontrado = pedidoQueEstoyBuscando.get(0);
+
+        Pedido pedidoEncontrado = pedidos.get(0);
+
         try {
             this.repositorio.delete(pedidoEncontrado);
         } catch (Exception error) {
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
-                    "No se pudo eliminar el pedido" +error.getMessage()
+                    "No se pudo eliminar el pedido: " + error.getMessage()
             );
-
         }
-
     }
-    // Modificar algunos datos
-    public PedidoDTO actualizarPedido (Integer id, Pedido datosActualizados) {
-        Optional<Pedido> pedidoQueEstoyBuscando = this.repositorio.findById(id);
-        if (!pedidoQueEstoyBuscando.isPresent()) {
+
+    // Modificar pedido
+    public PedidoDTO actualizarPedido(Integer id, Pedido datosActualizados) {
+        Optional<Pedido> pedidoBuscado = this.repositorio.findById(id);
+
+        if (!pedidoBuscado.isPresent()) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
-                    "No se encontro ningun pedido con el id " + id + " suministrado"
+                    "No se encontró ningún pedido con el id " + id
             );
-
         }
-        Pedido pedidoEncontrado = pedidoQueEstoyBuscando.get();
 
-        // aplicar validaciones
+        Pedido pedidoEncontrado = pedidoBuscado.get();
 
-
-        // actualizo los campos que se permitieron modificar
-
+        // Actualizo los campos permitidos
         pedidoEncontrado.setMontoTotal(datosActualizados.getMontoTotal());
         pedidoEncontrado.setFechaCreacion(datosActualizados.getFechaCreacion());
 
-
-        //concluyo la operacion en la bd
         Pedido pedidoActualizado = this.repositorio.save(pedidoEncontrado);
-
 
         if (pedidoActualizado == null) {
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error al actualizar el usuario en la base de datos, intenta nuevamente"
+                    "Error al actualizar el pedido en la base de datos"
             );
-
         }
 
-        return this.mapa.convertir_pedido_a_pedidodto(pedidoActualizado);
+        return (PedidoDTO) this.mapa.convertir_pedido_a_pedidodto(pedidoActualizado);
     }
-
 }
+

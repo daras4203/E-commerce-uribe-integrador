@@ -29,7 +29,7 @@ public class Cliente {
     @Column(name = "city", nullable = false, length = 50)
     private String ciudad;
 
-    // Relación opcional con Usuario
+
     @OneToOne
     @JoinColumn(name = "usuario_id")
     @JsonBackReference(value = "relacionusuariocliente")

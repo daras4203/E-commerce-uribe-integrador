@@ -1,6 +1,7 @@
 package com.example.EcomerceUribe.controladores;
 
 import com.example.EcomerceUribe.modelos.Pedido;
+import com.example.EcomerceUribe.modelos.DTOS.PedidoDTO;
 import com.example.EcomerceUribe.servicios.PedidoServicio;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,12 +16,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/pedidos")
 @Tag(name="controlador para operaciones en la tabla pedidos")
-public class PedidoControlador<PedidoDTO> {
+public class PedidoControlador {
 
     @Autowired
-    PedidoServicio servicio;
+    private PedidoServicio servicio;
 
-    // Guardar pedido
     @Operation(summary = "Crear un pedido en la base de datos")
     @PostMapping(produces = "application/json")
     public ResponseEntity<PedidoDTO> guardar(@RequestBody Pedido datos) {
@@ -28,7 +28,6 @@ public class PedidoControlador<PedidoDTO> {
         return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
     }
 
-    // Listar todos
     @Operation(summary = "Listar todos los pedidos guardados en la base de datos")
     @GetMapping(produces = "application/json")
     public ResponseEntity<List<PedidoDTO>> listar() {
@@ -36,7 +35,6 @@ public class PedidoControlador<PedidoDTO> {
         return ResponseEntity.status(HttpStatus.OK).body(respuesta);
     }
 
-    // Buscar por ID
     @Operation(summary = "Buscar un pedido por ID")
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<PedidoDTO> buscarPorId(@PathVariable Integer id) {
@@ -44,7 +42,6 @@ public class PedidoControlador<PedidoDTO> {
         return ResponseEntity.status(HttpStatus.OK).body(respuesta);
     }
 
-    // Eliminar pedido por fecha de creación
     @Operation(summary = "Eliminar un pedido según fecha de creación")
     @DeleteMapping(value = "/fecha/{fechaCreacion}", produces = "application/json")
     public ResponseEntity<Void> eliminar(@PathVariable LocalDate fechaCreacion) {
@@ -52,7 +49,6 @@ public class PedidoControlador<PedidoDTO> {
         return ResponseEntity.noContent().build();
     }
 
-    // Modificar pedido
     @Operation(summary = "Modificar monto y fecha de creación de un pedido")
     @PutMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<PedidoDTO> modificar(@PathVariable Integer id, @RequestBody Pedido datos) {
@@ -60,6 +56,7 @@ public class PedidoControlador<PedidoDTO> {
         return ResponseEntity.status(HttpStatus.OK).body(respuesta);
     }
 }
+
 
 
 
