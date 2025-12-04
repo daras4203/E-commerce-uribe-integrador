@@ -1,33 +1,18 @@
 package com.example.EcomerceUribe.modelos.DTOS;
 
 public class ClienteDTO {
-    private Integer id;
+
     private String direccion;
-    private String ciudad;
-    private String referenciaPago;
     private Double calificacion;
-    private String departamento;
-    private Integer usuarioId;
+    private String referenciaPago;
 
     public ClienteDTO() {
     }
 
-    public ClienteDTO(Integer id, String direccion, String ciudad, String referenciaPago, Double calificacion, String departamento, Integer usuarioId) {
-        this.id = id;
+    public ClienteDTO(String direccion, Double calificacion, String referenciaPago) {
         this.direccion = direccion;
-        this.ciudad = ciudad;
-        this.referenciaPago = referenciaPago;
         this.calificacion = calificacion;
-        this.departamento = departamento;
-        this.usuarioId = usuarioId;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
+        this.referenciaPago = referenciaPago;
     }
 
     public String getDireccion() {
@@ -38,22 +23,6 @@ public class ClienteDTO {
         this.direccion = direccion;
     }
 
-    public String getCiudad() {
-        return ciudad;
-    }
-
-    public void setCiudad(String ciudad) {
-        this.ciudad = ciudad;
-    }
-
-    public String getReferenciaPago() {
-        return referenciaPago;
-    }
-
-    public void setReferenciaPago(String referenciaPago) {
-        this.referenciaPago = referenciaPago;
-    }
-
     public Double getCalificacion() {
         return calificacion;
     }
@@ -62,19 +31,11 @@ public class ClienteDTO {
         this.calificacion = calificacion;
     }
 
-    public String getDepartamento() {
-        return departamento;
+    public String getReferenciaPago() {
+        return referenciaPago;
     }
 
-    public void setDepartamento(String departamento) {
-        this.departamento = departamento;
-    }
-
-    public Integer getUsuarioId() {
-        return usuarioId;
-    }
-
-    public void setUsuarioId(Integer usuarioId) {
-        this.usuarioId = usuarioId;
+    public void setReferenciaPago(String referenciaPago) {
+        this.referenciaPago = referenciaPago;
     }
 }

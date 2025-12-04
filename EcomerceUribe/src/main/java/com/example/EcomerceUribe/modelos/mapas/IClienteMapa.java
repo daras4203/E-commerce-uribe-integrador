@@ -7,21 +7,16 @@ import org.mapstruct.Mapping;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel= "spring")
 public interface IClienteMapa {
+    @Mapping(source ="direccion", target = "direccion")
+    @Mapping(source ="calificacion", target = "calificacion")
+    @Mapping(source ="referenciaPago", target = "referenciaPago")
 
-    // Se construyen 2 funciones por mapa
+    ClienteDTO convertir_cliente_a_clientedto(Cliente cliente);
 
-    // 1. Que transforme 1 modelo en 1 DTO
-    @Mapping(source = "id", target = "id")
-    @Mapping(source = "direccion", target = "direccion")
-    @Mapping(source = "ciudad", target = "ciudad")
-    @Mapping(source = "referenciaPago", target = "referenciaPago")
-    @Mapping(source = "calificacion", target = "calificacion")
-    @Mapping(source = "departamento", target = "departamento")
-    @Mapping(source = "usuario.id", target = "usuarioId")
-    public ClienteDTO convertir_cliente_a_clientedto(Cliente cliente);
+    List<ClienteDTO> convetir_lista_a_listaclientedto(List<Cliente> lista);
 
-    // 2. Que transforme una List<modelo> en una List<DTO
-    List<ClienteDTO> convertir_lista_a_listadtocliente(List<Cliente> listaClientes);
+
+
 }

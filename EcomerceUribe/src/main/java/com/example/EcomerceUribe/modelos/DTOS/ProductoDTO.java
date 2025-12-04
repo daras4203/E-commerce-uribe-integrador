@@ -1,11 +1,11 @@
 package com.example.EcomerceUribe.modelos.DTOS;
 
+import com.example.EcomerceUribe.ayudas.Categoria;
+
 public class ProductoDTO {
-    private Integer id;
     private String nombre;
-    private String fotografia;
     private String descripcion;
-    private String categoria; // Enum como texto
+    private Categoria categoria;
     private Integer precioUnitario;
     private String marca;
     private boolean aplicaDescuento;
@@ -13,23 +13,13 @@ public class ProductoDTO {
     public ProductoDTO() {
     }
 
-    public ProductoDTO(Integer id, String nombre, String fotografia, String descripcion, String categoria, Integer precioUnitario, String marca, boolean aplicaDescuento) {
-        this.id = id;
+    public ProductoDTO(String nombre, String descripcion, Categoria categoria, Integer precioUnitario, String marca, boolean aplicaDescuento) {
         this.nombre = nombre;
-        this.fotografia = fotografia;
         this.descripcion = descripcion;
         this.categoria = categoria;
         this.precioUnitario = precioUnitario;
         this.marca = marca;
         this.aplicaDescuento = aplicaDescuento;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getNombre() {
@@ -40,14 +30,6 @@ public class ProductoDTO {
         this.nombre = nombre;
     }
 
-    public String getFotografia() {
-        return fotografia;
-    }
-
-    public void setFotografia(String fotografia) {
-        this.fotografia = fotografia;
-    }
-
     public String getDescripcion() {
         return descripcion;
     }
@@ -56,11 +38,11 @@ public class ProductoDTO {
         this.descripcion = descripcion;
     }
 
-    public String getCategoria() {
+    public Categoria getCategoria() {
         return categoria;
     }
 
-    public void setCategoria(String categoria) {
+    public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
     }
 

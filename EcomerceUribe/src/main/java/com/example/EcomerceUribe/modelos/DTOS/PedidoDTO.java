@@ -3,8 +3,8 @@ package com.example.EcomerceUribe.modelos.DTOS;
 import java.time.LocalDate;
 
 public class PedidoDTO {
-    private Integer id;
-    private Double montoTotal;
+
+    private Integer montoTotal;
     private LocalDate fechaCreacion;
     private LocalDate fechaEntrega;
     private Integer costoEnvio;
@@ -12,27 +12,18 @@ public class PedidoDTO {
     public PedidoDTO() {
     }
 
-    public PedidoDTO(Integer id, Double montoTotal, LocalDate fechaCreacion, LocalDate fechaEntrega, Integer costoEnvio) {
-        this.id = id;
+    public PedidoDTO(Integer montoTotal, LocalDate fechaCreacion, LocalDate fechaEntrega, Integer costoEnvio) {
         this.montoTotal = montoTotal;
         this.fechaCreacion = fechaCreacion;
         this.fechaEntrega = fechaEntrega;
         this.costoEnvio = costoEnvio;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Double getMontoTotal() {
+    public Integer getMontoTotal() {
         return montoTotal;
     }
 
-    public void setMontoTotal(Double montoTotal) {
+    public void setMontoTotal(Integer montoTotal) {
         this.montoTotal = montoTotal;
     }
 

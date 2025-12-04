@@ -1,70 +1,44 @@
 package com.example.EcomerceUribe.modelos.DTOS;
 
+import com.example.EcomerceUribe.ayudas.Cargos;
+import com.example.EcomerceUribe.ayudas.Sedes;
+
 public class EmpleadoDTO {
-    private Integer id;
-    private String cargo;
-    private Double salario;
-    private String fechaIngreso;
-    private String area;
-    private Integer usuarioId;
+
+    private Cargos cargo;
+    private Integer salario;
+    private Sedes sede;
 
     public EmpleadoDTO() {
     }
 
-    public EmpleadoDTO(Integer id, String cargo, Double salario, String fechaIngreso, String area, Integer usuarioId) {
-        this.id = id;
+    public EmpleadoDTO(Cargos cargo, Integer salario, Sedes sede) {
         this.cargo = cargo;
         this.salario = salario;
-        this.fechaIngreso = fechaIngreso;
-        this.area = area;
-        this.usuarioId = usuarioId;
+        this.sede = sede;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getCargo() {
+    public Cargos getCargo() {
         return cargo;
     }
 
-    public void setCargo(String cargo) {
+    public void setCargo(Cargos cargo) {
         this.cargo = cargo;
     }
 
-    public Double getSalario() {
+    public Integer getSalario() {
         return salario;
     }
 
-    public void setSalario(Double salario) {
+    public void setSalario(Integer salario) {
         this.salario = salario;
     }
 
-    public String getFechaIngreso() {
-        return fechaIngreso;
+    public Sedes getSede() {
+        return sede;
     }
 
-    public void setFechaIngreso(String fechaIngreso) {
-        this.fechaIngreso = fechaIngreso;
-    }
-
-    public String getArea() {
-        return area;
-    }
-
-    public void setArea(String area) {
-        this.area = area;
-    }
-
-    public Integer getUsuarioId() {
-        return usuarioId;
-    }
-
-    public void setUsuarioId(Integer usuarioId) {
-        this.usuarioId = usuarioId;
+    public void setSede(Sedes sede) {
+        this.sede = sede;
     }
 }

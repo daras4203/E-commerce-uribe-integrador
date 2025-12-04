@@ -17,7 +17,7 @@ public interface IUsuarioRepositorio extends JpaRepository<Usuario,Integer> {
   //BUSCAR TODOS LOS REGISTROS
 
 
-  //SECCION DE CONSULTAS O QUERIES PERZONALIZADAS
+  //SECCION DE CONSULTAS PERSONALIZADAS
   List<Usuario> findByNombres(String nombres);
   Optional<Usuario> findByCorreo(String correo);
 

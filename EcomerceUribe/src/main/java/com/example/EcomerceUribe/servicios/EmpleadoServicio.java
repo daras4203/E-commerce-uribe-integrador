@@ -1,13 +1,11 @@
 package com.example.EcomerceUribe.servicios;
 
 import com.example.EcomerceUribe.modelos.DTOS.EmpleadoDTO;
+import com.example.EcomerceUribe.modelos.DTOS.ProductoDTO;
 import com.example.EcomerceUribe.modelos.Empleado;
 import com.example.EcomerceUribe.modelos.mapas.IEmpleadoMapa;
 import com.example.EcomerceUribe.repositorios.IEmpleadoRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,129 +16,110 @@ import java.util.Optional;
 @Service
 public class EmpleadoServicio {
 
+
     @Autowired
     private IEmpleadoRepositorio repositorio;
 
     @Autowired
     private IEmpleadoMapa mapa;
 
-    // Guardar empleado
-    public EmpleadoDTO guardarEmpleado(Empleado datosEmpleado) {
-
-        // Validar ID obligatorio
-        if (datosEmpleado.getId() == null) {
+    public EmpleadoDTO guardarEmpleado(Empleado datosEmpleado){
+        if(datosEmpleado.getCargo()==null  ){
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    "El ID del empleado es obligatorio"
-            );
-        }
 
-
-        // Validar cargo obligatorio
-        if (datosEmpleado.getCargo() == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
                     "El cargo del empleado es obligatorio"
             );
         }
-
-
-        // Intentar guardar
-        Empleado empleadoGuardado = this.repositorio.save(datosEmpleado);
-        if (empleadoGuardado == null) {
+        Empleado empleadoQueGuardoElRepo=this.repositorio.save(datosEmpleado);
+        if(empleadoQueGuardoElRepo==null){
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error al guardar el empleado"
+                    "Error al guardar el empleado en la base de datos"
             );
+
         }
 
-        // Retornar DTO
-        return this.mapa.convertir_empleado_a_empleadodto(empleadoGuardado);
+        return this.mapa.convertir_empleado_a_empleadodto(empleadoQueGuardoElRepo);
     }
 
-    //  Buscar todos los empleados
-    public List<EmpleadoDTO> buscarTodosLosEmpleados() {
-        List<Empleado> listaEmpleados = this.repositorio.findAll();
-        return this.mapa.convertir_lista_a_listadtos(listaEmpleados);
+    //Buscar todos los empleados
+    public List<EmpleadoDTO> buscarTodosLosEmpleados(){
+        List<Empleado> listaDeEmpleadosConsultados=this.repositorio.findAll();
+        return this.mapa.convetir_lista_a_listaempleadodto(listaDeEmpleadosConsultados);
     }
 
-    //  Buscar empleado por ID
-    public EmpleadoDTO buscarEmpleadoPorId(Integer id) {
-        Optional<Empleado> empleadoBuscado = this.repositorio.findById(id);
-        if (!empleadoBuscado.isPresent()) {
+    //Buscar  por Id
+    public  EmpleadoDTO buscarEmpleadoPorId (Integer id){
+        Optional<Empleado> empleadoQueEstoyBuscando=this.repositorio.findById(id);
+        if(!empleadoQueEstoyBuscando.isPresent()){
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
-                    "No se encontró ningún empleado con el ID " + id
+                    "No se encontro ningun empleado con el id "+id+" suministrado"
             );
         }
-
-        return this.mapa.convertir_empleado_a_empleadodto(empleadoBuscado.get());
+        Empleado empleadoEncontrado = empleadoQueEstoyBuscando.get();
+        return this.mapa.convertir_empleado_a_empleadodto(empleadoEncontrado);
     }
 
-    //  Buscar empleado por documento
-    public EmpleadoDTO buscarEmpleadoPorDocumento(String documento) {
-        Optional<Empleado> empleadoBuscado = this.repositorio.findByDocumento(documento);
-        if (!empleadoBuscado.isPresent()) {
+    //Eliminar Empleados por sede
+    public void eliminarEmpleado(String sede){
+        List<Empleado> empleadoQueEstoyBuscando=this.repositorio.findBySede(sede);
+        if(!empleadoQueEstoyBuscando.isEmpty()) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
-                    "No se encontró ningún empleado con el documento " + documento
+                    "No se encontro ningun empleado con la sede " + sede + " suministrado"
             );
         }
+        Empleado empleadoEncontrado = empleadoQueEstoyBuscando.get(0); //preguntar al profe con listas
+        try {
+            this.repositorio.delete(empleadoEncontrado);
+        } catch (Exception error) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "No se pudo eliminar el pedido" +error.getMessage()
+            );
 
-        return this.mapa.convertir_empleado_a_empleadodto(empleadoBuscado.get());
+        }
+
     }
-
-    //  Actualizar empleado
+    // Modificar algunos datos
     public EmpleadoDTO actualizarEmpleado(Integer id, Empleado datosActualizados) {
-        Optional<Empleado> empleadoBuscado = this.repositorio.findById(id);
-        if (!empleadoBuscado.isPresent()) {
+        Optional<Empleado> empleadoQueEstoyBuscando = this.repositorio.findById(id);
+        if (!empleadoQueEstoyBuscando.isPresent()) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
-                    "No se encontró ningún empleado con el ID " + id
+                    "No se encontro ningun empleado con el id " + id + " suministrado"
             );
+
         }
+        Empleado empleadoEncontrado = empleadoQueEstoyBuscando.get();
 
-        Empleado empleado = empleadoBuscado.get();
-
-        // Actualizaciones permitidas
-
-        if (datosActualizados.getCargo() != null) {
-            empleado.setCargo(datosActualizados.getCargo());
-        }
+        // aplicar validaciones
 
 
-        if (datosActualizados.getSalario() != null && datosActualizados.getSalario() >= 0) {
-            empleado.setSalario(datosActualizados.getSalario());
-        }
+        // actualizo los campos que se permitieron modificar
 
-        Empleado empleadoActualizado = this.repositorio.save(empleado);
+        empleadoEncontrado.setCargo(datosActualizados.getCargo());
+        empleadoEncontrado.setSalario(datosActualizados.getSalario());
+
+
+        //concluyo la operacion en la bd
+        Empleado empleadoActualizado = this.repositorio.save(empleadoEncontrado);
+
+
         if (empleadoActualizado == null) {
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error al actualizar el empleado"
+                    "Error al actualizar  en la base de datos, intenta nuevamente"
             );
+
         }
 
         return this.mapa.convertir_empleado_a_empleadodto(empleadoActualizado);
     }
 
-    //  Eliminar empleado
-    public void eliminarEmpleado(Integer id) {
-        Optional<Empleado> empleadoBuscado = this.repositorio.findById(id);
-        if (!empleadoBuscado.isPresent()) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "No se encontró ningún empleado con el ID " + id
-            );
-        }
 
-        try {
-            this.repositorio.delete(empleadoBuscado.get());
-        } catch (Exception e) {
-            throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error al eliminar el empleado: " + e.getMessage()
-            );
-        }
-    }
+
+
 }

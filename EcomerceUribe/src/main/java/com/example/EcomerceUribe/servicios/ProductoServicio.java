@@ -1,13 +1,16 @@
 package com.example.EcomerceUribe.servicios;
 
+import com.example.EcomerceUribe.modelos.DTOS.PedidoDTO;
 import com.example.EcomerceUribe.modelos.DTOS.ProductoDTO;
+import com.example.EcomerceUribe.modelos.DTOS.UsuarioGenericoDTO;
+import com.example.EcomerceUribe.modelos.Pedido;
 import com.example.EcomerceUribe.modelos.Producto;
+import com.example.EcomerceUribe.modelos.Usuario;
+import com.example.EcomerceUribe.modelos.mapas.IPedidoMapa;
 import com.example.EcomerceUribe.modelos.mapas.IProductoMapa;
+import com.example.EcomerceUribe.repositorios.IPedidoRepositorio;
 import com.example.EcomerceUribe.repositorios.IProductoRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,153 +27,115 @@ public class ProductoServicio {
     @Autowired
     private IProductoMapa mapa;
 
-    //  Guardar producto
-    public ProductoDTO guardarProducto(Producto datosProducto) {
+    public ProductoDTO guardarProducto (Producto datosProducto){
 
-        // Validar nombre obligatorio
-        if (datosProducto.getNombre() == null || datosProducto.getNombre().isBlank()) {
+        if(datosProducto.getNombre()==null || datosProducto.getNombre().isBlank() ) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
+
                     "El nombre del producto es obligatorio"
             );
         }
-
-        // Validar categoría obligatoria
-        if (datosProducto.getCategoria() == null ){
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "El producto debe tener una categoría asociada"
-            );
-        }
-
-
-        // Intentar guardar
-        Producto productoGuardado = this.repositorio.save(datosProducto);
-        if (productoGuardado == null) {
+        Producto productoQueGuardoElRepo=this.repositorio.save(datosProducto);
+        if(productoQueGuardoElRepo==null){
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error al guardar el producto"
+                    "Error al guardar el pedido en la base de datos"
             );
+
         }
 
-        // Retornar DTO
-        return this.mapa.convertir_producto_a_productodto(productoGuardado);
+        return this.mapa.convertir_producto_a_productodto(productoQueGuardoElRepo);
+
+    }
+    //Buscar todos los productos
+    public List<ProductoDTO> buscarTodosLosProductos(){
+        List<Producto> listaDeProductosConsultados=this.repositorio.findAll();
+        return this.mapa.convetir_lista_a_listaproductodto(listaDeProductosConsultados);
     }
 
-    //  Buscar todos los productos
-    public List<ProductoDTO> buscarTodosLosProductos() {
-        List<Producto> listaProductos = this.repositorio.findAll();
-        if (listaProductos.isEmpty()) {
+    //Buscar un producto por Id
+    public  ProductoDTO buscarProductoPorId (Integer id){
+        Optional<Producto> productoQueEstoyBuscando=this.repositorio.findById(id);
+        if(!productoQueEstoyBuscando.isPresent()){
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
-                    "No hay productos registrados"
+                    "No se encontro ningun usuario con el id "+id+" suministrado"
             );
         }
-        return this.mapa.convertir_lista_a_listadtos(listaProductos);
+        Producto productoEncontrado = productoQueEstoyBuscando.get();
+        return this.mapa.convertir_producto_a_productodto(productoEncontrado);
     }
 
-    //  Buscar producto por ID
-    public ProductoDTO buscarProductoPorId(Integer id) {
-        Optional<Producto> productoBuscado = this.repositorio.findById(id);
-        if (!productoBuscado.isPresent()) {
+    //Buscar un producto por fotografia
+    public  ProductoDTO buscarProductoGenericoPorFotografia (String fotografia){
+        Optional<Producto> productoQueEstoyBuscando=this.repositorio.findByFotografia(fotografia);
+        if(!productoQueEstoyBuscando.isPresent()){
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
-                    "No se encontró ningún producto con el ID " + id
+                    "No se encontro ningun producto con la fotografía "+fotografia+" suministrado"
             );
         }
-
-        return this.mapa.convertir_producto_a_productodto(productoBuscado.get());
+        Producto productoEncontrado = productoQueEstoyBuscando.get();
+        return this.mapa.convertir_producto_a_productodto(productoEncontrado);
     }
 
-    //  Buscar productos por categoría (método personalizado)
-    public List<ProductoDTO> buscarProductosPorCategoria(String categoria) {
-        if (categoria == null || categoria.isBlank()) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Debe proporcionar una categoría para realizar la búsqueda"
-            );
-        }
-
-        List<Producto> productosPorCategoria = this.repositorio.findByCategoria(categoria);
-        if (productosPorCategoria.isEmpty()) {
+    //Eliminar un producto
+    public void eliminarProducto(Integer id){
+        Optional<Producto> productoQueEstoyBuscando=this.repositorio.findById(id);
+        if(!productoQueEstoyBuscando.isPresent()) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
-                    "No se encontraron productos en la categoría: " + categoria
+                    "No se encontro ningun producto con el id " + id + " suministrado"
             );
         }
+        Producto productoEncontrado = productoQueEstoyBuscando.get();
+        try {
+            this.repositorio.delete(productoEncontrado);
+        } catch (Exception error) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "No se pudo eliminar el producto" +error.getMessage()
+            );
 
-        return this.mapa.convertir_lista_a_listadtos(productosPorCategoria);
+        }
+
     }
 
-    //  Buscar productos por precio (método personalizado)
-    public List<ProductoDTO> buscarProductosPorPrecio(Double precio) {
-        if (precio == null || precio <= 0) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Debe proporcionar un precio válido para realizar la búsqueda"
-            );
-        }
 
-        List<Producto> productosPorPrecio = this.repositorio.findByPrecio(precio);
-        if (productosPorPrecio.isEmpty()) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "No se encontraron productos con el precio: " + precio
-            );
-        }
-
-        return this.mapa.convertir_lista_a_listadtos(productosPorPrecio);
-    }
-
-    // Actualizar producto
+    // Modificar algunos datos de un producto
     public ProductoDTO actualizarProducto(Integer id, Producto datosActualizados) {
-        Optional<Producto> productoBuscado = this.repositorio.findById(id);
-        if (!productoBuscado.isPresent()) {
+        Optional<Producto> productoQueEstoyBuscando = this.repositorio.findById(id);
+        if (!productoQueEstoyBuscando.isPresent()) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
-                    "No se encontró ningún producto con el ID " + id
+                    "No se encontro ningun usuario con el id " + id + " suministrado"
             );
+
         }
+        Producto productoEncontrado = productoQueEstoyBuscando.get();
 
-        Producto producto = productoBuscado.get();
+        // aplicar validaciones
 
-        // Actualizaciones permitidas
-        if (datosActualizados.getNombre() != null && !datosActualizados.getNombre().isBlank()) {
-            producto.setNombre(datosActualizados.getNombre());
-        }
 
-        if (datosActualizados.getDescripcion() != null && !datosActualizados.getDescripcion().isBlank()) {
-            producto.setDescripcion(datosActualizados.getDescripcion());
-        }
+        // actualizo los campos que se permitieron modificar
 
-        Producto productoActualizado = this.repositorio.save(producto);
+        productoEncontrado.setNombre(datosActualizados.getNombre());
+        productoEncontrado.setFotografia(datosActualizados.getFotografia());
+
+
+        //concluyo la operacion en la bd
+        Producto productoActualizado = this.repositorio.save(productoEncontrado);
+
+
         if (productoActualizado == null) {
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error al actualizar el producto"
+                    "Error al actualizar el usuario en la base de datos, intenta nuevamente"
             );
+
         }
 
         return this.mapa.convertir_producto_a_productodto(productoActualizado);
-    }
-
-    //  Eliminar producto
-    public void eliminarProducto(Integer id) {
-        Optional<Producto> productoBuscado = this.repositorio.findById(id);
-        if (!productoBuscado.isPresent()) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "No se encontró ningún producto con el ID " + id
-            );
-        }
-
-        try {
-            this.repositorio.delete(productoBuscado.get());
-        } catch (Exception e) {
-            throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error al eliminar el producto: " + e.getMessage()
-            );
-        }
     }
 }
